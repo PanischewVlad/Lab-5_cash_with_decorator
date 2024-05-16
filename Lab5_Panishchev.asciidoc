@@ -1,0 +1,85 @@
++*In[2]:*+
+[source, ipython3]
+----
+N = ord("P") % 3+ 1
+print(N)
+----
+
+
++*Out[2]:*+
+----
+3
+----
+
+
++*In[3]:*+
+[source, ipython3]
+----
+import functools
+
+def memoize(func):
+    cache = {}
+
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        key = args + tuple(sorted(kwargs.items()))
+        if key in cache:
+            print("Result from cache")
+            return cache[key]
+        else:
+            result = func(*args, **kwargs)
+            cache[key] = result
+            return result
+
+    return wrapper
+
+@memoize
+def fun1(a, b):
+    print("Running add function")
+    return a + b
+
+@memoize
+def fun2(a, b):
+    print("Running multiply function")
+    return a * b
+
+@memoize
+def fun3(*args):
+    print("Running concatenate_strings function")
+    return ''.join(args)
+
+# Testing the functions
+print(fun1(2, 3))  # Output should be "Running add function" then 5
+print(fun1(2, 3))  # Output should be "Result from cache" then 5
+
+print(fun2(4, 5))  # Output should be "Running multiply function" then 20
+print(fun2(4, 5))  # Output should be "Result from cache" then 20
+
+print(fun3("Hello", " ", "World"))  # Output should be "Running concatenate_strings function" then "Hello World"
+print(fun3("Hello", " ", "World"))  # Output should be "Result from cache" then "Hello World"
+
+----
+
+
++*Out[3]:*+
+----
+Running add function
+5
+Result from cache
+5
+Running multiply function
+20
+Result from cache
+20
+Running concatenate_strings function
+Hello World
+Result from cache
+Hello World
+----
+
+
++*In[ ]:*+
+[source, ipython3]
+----
+
+----
